@@ -14,6 +14,13 @@ function is_logged_in($redirect = false, $destination = "login.php")
     }
     return $isLoggedIn;
 }
+function current_tokens($id){
+    $db = getDB();
+    $stmt = $db->prepare("SELECT current_tokens FROM ViewerAccountData WHERE id = :id");
+    $r = $stmt->execute([":id" => $id]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result["current_tokens"];
+}
 function has_role($role)
 {
     if (is_logged_in() && isset($_SESSION["user"]["roles"])) {

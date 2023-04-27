@@ -1,12 +1,15 @@
 <?php
-require(__DIR__ . "/../partials/nav.php");
+require(__DIR__ . "/../../partials/nav.php");
 ?>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+<style>li{
+    color:black;
+}
+</style>
 <section class="bg-light py-5">
                 <div class="container px-5 my-5">
                     <div class="text-center mb-5">
-                        <h1 class="fw-bolder">Choose the plan that works best for you</h1>
-                        <p class="lead fw-normal text-muted mb-0">Place your first ad for free today!</p>
+                        <h1 class="fw-bolder">Upgrade your plan today!</h1>
                     </div>
                     <div class="row gx-5 justify-content-center">
                         <!-- Pricing card free-->
@@ -15,8 +18,8 @@ require(__DIR__ . "/../partials/nav.php");
                                 <div class="card-body p-5">
                                     <div class="small text-uppercase fw-bold text-muted">Small Business</div>
                                     <div class="mb-3">
-                                        <span class="display-4 fw-bold"><s><i>$450</i></s> $0!</span>
-                                        <span class="text-muted"></span>
+                                        <span class="display-4 fw-bold"><i>$450</i></span>
+                                        <span class="text-muted">Current Plan</span>
                                     </div>
                                     <ul class="list-unstyled mb-4">
                                         <li class="mb-2">
@@ -56,7 +59,7 @@ require(__DIR__ . "/../partials/nav.php");
                                             No Dedicated Support Team
                                         </li>
                                     </ul>
-                                    <div class="d-grid"><a class="btn btn-outline-primary" href="#!">Choose plan</a></div>
+                                    <div class="d-grid"><a class="btn btn-outline-primary disabled"  href="#!">Choosen plan</a></div>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +111,50 @@ require(__DIR__ . "/../partials/nav.php");
                                             2 Week Campaign Duration
                                         </li>
                                     </ul>
-                                    <div class="d-grid"><a class="btn btn-primary" href="#!">Choose plan</a></div>
+                                    <!-- Replace "test" with your own sandbox Business account app client ID -->
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <!-- Set up a container element for the button -->
+    <div id="paypal-button-container"></div>
+    <script>
+      paypal.Buttons({
+        // Order is created on the server and the order id is returned
+        createOrder() {
+          return fetch("/my-server/create-paypal-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // use the "body" param to optionally pass additional order information
+            // like product skus and quantities
+            body: JSON.stringify({
+              cart: [
+                {
+                  sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
+                  quantity: "YOUR_PRODUCT_QUANTITY",
+                },
+              ],
+            }),
+          })
+          .then((response) => response.json())
+          .then((order) => order.id);
+        },
+        // Finalize the transaction on the server after payer approval
+        onApprove(data) {
+          return fetch("/my-server/capture-paypal-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderID: data.orderID
+            })
+          })
+          .then((response) => response.json())
+          .then((orderData) => {
+          });
+        }
+      }).render('#paypal-button-container');
+    </script>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +202,8 @@ require(__DIR__ . "/../partials/nav.php");
                                             Campaign Recomendations based on the F.E.R.R.E.T.'s analysis of the Ad
                                         </li>
                                     </ul>
-                                    <div class="d-grid"><a class="btn btn-outline-primary" href="#!">Choose plan</a></div>
+                                    <div class='button btn btn-primary btn-lg' id='paypal-button-container'>Contact Us to upgrade to Enterprise</div>
+    </script>
                                 </div>
                             </div>
                         </div>
@@ -179,3 +226,8 @@ require(__DIR__ . "/../partials/nav.php");
                 </div>
             </div>
         </footer>
+        
+        
+                
+            
+            
