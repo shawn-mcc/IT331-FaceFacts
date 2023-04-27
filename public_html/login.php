@@ -1,39 +1,6 @@
 <?php
 require(__DIR__ . "/../partials/nav.php");
 ?>
-<div class="container-fluid">
-    <h1>Login</h1>
-    <form onsubmit="return validate(this)" method="POST">
-        <div class="mb-3">
-            <label class="form-label" for="email">Username/Email</label>
-            <input class="form-control" type="text" id="email" name="email" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="pw">Password</label>
-            <input class="form-control" type="password" id="pw" name="password" required minlength="8" />
-        </div>
-        <input type="submit" class="mt-3 btn btn-primary" value="Login" />
-        <p class="mt-3">Don't have an account? <a href="register.php">Register</a></p>
-    </form>
-</div>
-<script>
-    function validate(form) {
-        // JavaScript validation
-        let email = form.email.value;
-        let password = form.password.value;
-        if(validateEmail(email) == true || validateUsername(email) == true){
-            return true;
-        }else{
-            flash("Sorry, that email or username is not valid. Please check and try again.");
-            return false;
-        }
-        if(password.length == 0){
-            flash("Password is required");
-            return false;
-        }//Don't check if password follows password rules here. No need to have those rules visible outside of registration
-        return true;  
-    }
-</script>
 <?php
 
 if (isset($_POST["email"]) && isset($_POST["password"])) {
@@ -55,7 +22,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     if (str_contains($email, "@")) {
 
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if (!validate_email($email)) {
+        if (validate_email($email)) {
             flash("Invalid email address");
             $hasError = true;
         }
@@ -86,9 +53,9 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         $_SESSION["user"] = $user;
                         try {
                             //lookup potential roles
-                            $stmt = $db->prepare("SELECT Roles.name FROM Roles 
-                        JOIN UserRoles on Roles.id = UserRoles.role_id 
-                        where UserRoles.user_id = :user_id and Roles.is_active = 1 and UserRoles.is_active = 1");
+                            $stmt = $db->prepare("SELECT AccountType.name FROM AccountType 
+                        JOIN UserAccountTypes on AccountType.id = UserAccountTypes.account_type_id 
+                        WHERE UserAccountTypes.user_id = :user_id and AccountType.is_active = 1");
                             $stmt->execute([":user_id" => $user["id"]]);
                             $roles = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all since we'll want multiple
                         } catch (Exception $e) {
@@ -101,8 +68,14 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                             $_SESSION["user"]["roles"] = []; //no roles
                         }
                         flash("Welcome back " . get_username());
+                        
                         //Redirect to home page
-                        die(header("Location: dashboard.php"));
+                        if (has_role("viewer")){
+                            die(header("Location: viewer/dashboard.php"));
+                        } elseif (has_role("client")){
+                            die(header("Location: client/dashboard.php"));
+                        } 
+                        
                     } else {
                         flash("Invalid password");
                     }
@@ -117,4 +90,35 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     }
 }
 ?>
+<div class="container-fluid">
+    <h1>Login</h1>
+    <form onsubmit="return validate(this)" method="POST">
+        <div class="mb-3">
+            <label class="form-label" for="email">Username/Email</label>
+            <input class="form-control" type="text" id="email" name="email" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="pw">Password</label>
+            <input class="form-control" type="password" id="pw" name="password" required minlength="8" />
+        </div>
+        <input type="submit" class="mt-3 btn btn-primary" value="Login" />
+        <p class="mt-3">Don't have an account? <a href="register.php">Register</a></p>
+    </form>
+</div>
+<script>
+    function validate(form) {
+        // JavaScript validation
+        let email = form.email.value;
+        let password = form.password.value;
+        if(validateEmail(email) == true || validateUsername(email) == true){
+            return true;
+        }
+        if(password.length == 0){
+            flash("Password is required");
+            return false;
+        }//Don't check if password follows password rules here. No need to have those rules visible outside of registration
+        return true;  
+    }
+</script>
+
 <?php require_once(__DIR__ . "/../partials/flash.php"); ?>

@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS `ViewerCampaignData`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `campaign_id` INT NOT NULL,
+    `target_age` TINYINT,
+    `target_gender` TINYINT,
+    `target_ethnicity` TINYINT,
+    `target_geo_location` TINYINT,
+    `target_disability` TINYINT,
+    `target_veteran` TINYINT,
+    `avg_happy` INT NOT NULL DEFAULT 0,
+    `avg_disgust` INT NOT NULL DEFAULT 0,
+    `avg_fear` INT NOT NULL DEFAULT 0,
+    `avg_sad` INT NOT NULL DEFAULT 0,
+    `avg_neutral` INT NOT NULL DEFAULT 0,
+    `avg_surprise` INT NOT NULL DEFAULT 0,
+    `ends` VARCHAR(80) NOT NULL,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP DEFAULT 0,
+    `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`campaign_id`) REFERENCES `Campaigns`(`id`)
+)

@@ -1,0 +1,1 @@
+ALTER TABLE `ViewerAccountTypes` DROP COLUMN `password`;

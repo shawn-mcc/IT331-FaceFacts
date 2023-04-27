@@ -15,6 +15,12 @@
     border-color: var(--green-blue-crayola);
 
 }
+
+li {
+    list-style-type: none;
+    color: var(--teal);
+}
+
 #Brand_Text{
     color: var(--hot_pink);
 }

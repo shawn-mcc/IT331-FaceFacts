@@ -5,8 +5,7 @@ $domain = $_SERVER["HTTP_HOST"];
 if (strpos($domain, ":")) {
     $domain = explode(":", $domain)[0];
 }
-$localWorks = true; //some people have issues with localhost for the cookie params
-//if you're one of those people make this false
+$localWorks = true; 
 
 //this is an extra condition added to "resolve" the localhost issue for the session cookie
 if (($localWorks && $domain == "localhost") || $domain != "localhost") {
@@ -53,14 +52,20 @@ session_start();
         </button>
         <div class="collapse navbar-collapse" id="navContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-                <?php if (is_logged_in()) : ?>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/dashboard.php'); ?>">Dashboard</a></li>
+                <?php if (has_role("viewer")) : ?>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/viewer/dashboard.php'); ?>">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/profile.php'); ?>">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/my_teams.php'); ?>">My Teams</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/store.php'); ?>">Store</a></li>
+                <?php endif; ?>
+                <?php if (has_role("client")) : ?>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/client/dashboard.php'); ?>">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/client/dashboard.php'); ?>">My Campaigns</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/client/dashboard.php'); ?>">My Company's Campaigns</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/client/profile.php'); ?>">Profile</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/index.php'); ?>">Home</a></li>
                     <li class="nav-item ms-auto"><a class="nav-link" href="<?php echo get_url('/about_us.php'); ?>">About Us</a></li>
-                    <li class="nav-item ms-auto"><a class="nav-link" href="<?php echo get_url('/contact_us.php'); ?>">Contact Us</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Pricing
@@ -70,51 +75,20 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('/pricing_viewer.php'); ?>">For Viewers</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item ms-auto"><a class="nav-link" href="<?php echo get_url('/FAQ.php'); ?>">FAQ</a></li>
+                    <?php endif; ?>
                 </ul>
+                <?php if (has_role("viewer")) : ?>
                 <ul class="navbar-nav navbar-right">
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/login.php'); ?>">Login</a></li>
-                    <li class="nav-item "><a class="nav-link" href="<?php echo get_url('/register.php'); ?>">Register</a></li>
+                    <li class="nav-item"><img src ="<?php echo get_url('/img/token.png'); ?>" style="height:30px;"></li>
+                    <li class="nav-item"><?php echo current_tokens(get_user_id()) ?></li>
                 </ul>
                 <?php endif; ?>
-                <?php if (has_role("Admin")) : ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Admin Tools
-                        </a>
-                        <ul class="dropdown-menu bg-warning" aria-labelledby="rolesDropdown">
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Roles</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_officers.php'); ?>">Assign Officers</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_roles.php'); ?>">View Roles</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
-                <?php if (has_role("Admin") || (has_role("Officer"))) : ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Team Management
-                        </a>
-                        <ul class="dropdown-menu bg-warning" aria-labelledby="rolesDropdown">
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_team.php'); ?>">Create Teams</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_teams.php'); ?>">Assign Teams</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_teams.php'); ?>">View Teams</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
-                <?php if (has_role("Admin") || (has_role("Officer"))) : ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Task Management
-                        </a>
-                        <ul class="dropdown-menu bg-warning" aria-labelledby="rolesDropdown">
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_tasks.php'); ?>">Create a New Task</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_tasks.php'); ?>">View Tasks</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
+                
                 <?php if (is_logged_in()) : ?>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('logout.php'); ?>">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/logout.php');?>">Logout</a></li>
+                <?php else : ?>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/login.php');?>">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('/register.php');?>">Register</a></li>
                 <?php endif; ?>
             </ul>
         </div>

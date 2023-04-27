@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS `ViewerAccountData`(
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(80) NOT NULL,
+    `username` VARCHAR(80) NOT NULL,
+    `password` VARCHAR(80) NOT NULL,
+    `first_name` VARCHAR(80) NOT NULL,
+    `last_name` VARCHAR(80) NOT NULL,
+    `current_tokens` INT NOT NULL,
+    `balance_dol` INT NOT NULL DEFAULT 0,
+    `balance_cent` INT NOT NULL DEFAULT 0,
+    `age` INT NOT NULL,
+    `gender` VARCHAR(80) NOT NULL,
+    `geo_location` VARCHAR(80) NOT NULL,
+    `ethnicity` VARCHAR(80),
+    `has_disability` VARCHAR(80),
+    `is_veteran` TINYINT,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP DEFAULT 0,
+    `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`email`) REFERENCES `Users`(`email`),
+    FOREIGN KEY (`username`) REFERENCES `Users`(`username`)
+)

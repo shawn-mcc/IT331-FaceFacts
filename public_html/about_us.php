@@ -1,6 +1,7 @@
 <?php
 require(__DIR__ . "/../partials/nav.php");
 ?>
+
 <header class="py-5">
                 <div class="container px-5">
                     <div class="row justify-content-center">
